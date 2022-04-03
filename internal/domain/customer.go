@@ -1,6 +1,8 @@
 package domain
 
-import "github.com/ashtishad/banking/lib"
+import (
+	"github.com/ashtishad/banking/internal/lib"
+)
 
 type Customer struct {
 	Id          string `json:"id"`
