@@ -2,7 +2,7 @@ package domain
 
 import (
 	"github.com/ashtishad/banking/internal/dto"
-	"github.com/ashtishad/banking/internal/lib"
+	"github.com/ashtishad/banking/pkg/lib"
 )
 
 type Customer struct {

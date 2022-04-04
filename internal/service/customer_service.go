@@ -3,7 +3,7 @@ package service
 import (
 	"github.com/ashtishad/banking/internal/domain"
 	"github.com/ashtishad/banking/internal/dto"
-	"github.com/ashtishad/banking/internal/lib"
+	"github.com/ashtishad/banking/pkg/lib"
 )
 
 // CustomerService is our PRIMARY PORT

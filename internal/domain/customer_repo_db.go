@@ -2,7 +2,7 @@ package domain
 
 import (
 	"database/sql"
-	"github.com/ashtishad/banking/internal/lib"
+	"github.com/ashtishad/banking/pkg/lib"
 )
 
 const (
