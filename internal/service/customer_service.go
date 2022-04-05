@@ -8,7 +8,7 @@ import (
 
 // CustomerService is our PRIMARY PORT
 type CustomerService interface {
-	GetCustomerById(status string) ([]dto.CustomerResponse, lib.RestErr)
+	GetCustomerById(id string) (*dto.CustomerResponse, lib.RestErr)
 }
 
 type DefaultCustomerService struct {
