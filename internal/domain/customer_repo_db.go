@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	findByIdSql = `SELECT id, name, date_of_birth,city,zipcode,status FROM customers WHERE id=$1;`
+	findByIdSql = `SELECT customer_id, name, city, zipcode, date_of_birth, status FROM customers WHERE customer_id = $1;`
 )
 
 type CustomerRepoDb struct {
@@ -21,9 +21,7 @@ func NewCustomerRepoDb(db *pgxpool.Pool) *CustomerRepoDb {
 
 // FindById returns a customer by id
 // Returns error if customer not found
-func (d *CustomerRepoDb) FindById(id string) (*Customer, lib.RestErr) {
-	// Note: Select * would supply data on db table order, order would mismatch with struct fields
-	findByIdSql := "select customer_id, name, city, zipcode, date_of_birth, status from customers where customer_id = $1"
+func (d *CustomerRepoDb) FindById(id int64) (*Customer, lib.RestErr) {
 	row := d.db.QueryRow(context.Background(), findByIdSql, id)
 
 	var c Customer

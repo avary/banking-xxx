@@ -8,7 +8,7 @@ import (
 
 // CustomerService is our PRIMARY PORT
 type CustomerService interface {
-	GetCustomerById(id string) (*dto.CustomerResponse, lib.RestErr)
+	GetCustomerById(id int64) (*dto.CustomerResponse, lib.RestErr)
 }
 
 type DefaultCustomerService struct {
@@ -20,7 +20,7 @@ func NewCustomerService(repo domain.CustomerRepository) DefaultCustomerService {
 }
 
 // GetCustomerById returns customer by id
-func (s DefaultCustomerService) GetCustomerById(id string) (*dto.CustomerResponse, lib.RestErr) {
+func (s DefaultCustomerService) GetCustomerById(id int64) (*dto.CustomerResponse, lib.RestErr) {
 	c, err := s.repo.FindById(id)
 	if err != nil {
 		return nil, err

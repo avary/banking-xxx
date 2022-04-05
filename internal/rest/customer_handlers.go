@@ -15,7 +15,12 @@ type CustomerHandlers struct {
 func (ch *CustomerHandlers) GetCustomerByID(c *gin.Context) {
 	log.Println("Handling GET request on ... /customers/{id}")
 
-	id := c.Param("id")
+	id, err := getCustomerIdFromPath(c.Param("id"))
+	if err != nil {
+		log.Printf("Error while getting user id : %v", err)
+		c.JSON(err.AsStatus(), err)
+		return
+	}
 
 	customer, err := ch.Service.GetCustomerById(id)
 	if err != nil {
