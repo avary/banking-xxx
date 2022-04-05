@@ -35,7 +35,7 @@ func GetDbClient() *pgxpool.Pool {
 	if err != nil {
 		log.Fatalf("Error connecting to database: %v", err)
 	}
-	//defer dbPool.Close()  will do this in main.go
+	//defer dbPool.Close()  will do this in server.go
 
 	if err = dbPool.Ping(context.Background()); err != nil {
 		log.Fatalf("Error connecting to database: %v", err)

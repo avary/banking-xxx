@@ -6,6 +6,10 @@ import (
 	"time"
 )
 
+// Customer is a domain entity
+// Id is int64 matched pg big serial
+// DateOfBirth is time.Time and is matched pg timestamp
+
 type Customer struct {
 	Id          int64     `json:"id"`
 	Name        string    `json:"name"`
@@ -23,7 +27,7 @@ type CustomerRepository interface {
 	//FindByName(name string) (*Customer, lib.RestErr)
 	//Create(customer *Customer) (*Customer, lib.RestErr)
 	//Update(customer *Customer) (*Customer, lib.RestErr)
-	//Delete(id string) lib.RestErr
+	//Delete(id int64) lib.RestErr
 }
 
 // statusAsText returns 1= active, 0= inactive
@@ -40,6 +44,9 @@ func (c Customer) dateAsText() string {
 	return c.DateOfBirth.Format(lib.DbDateLayout)
 }
 
+// ToCustomerResponse  converts Customer domain entity to DTO response
+// there is some type conversion happening when I show it to user in response
+// Like: Customer.DateOfBirth is time.Time, However on user level its string
 func (c Customer) ToCustomerResponse() dto.CustomerResponse {
 	return dto.CustomerResponse{
 		Id:          c.Id,
