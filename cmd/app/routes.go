@@ -7,4 +7,5 @@ import (
 
 func getRouteMappings(r *gin.Engine, ch rest.CustomerHandlers) {
 	r.GET("/customers/:id", ch.GetCustomerByID)
+	r.GET("/customers/search", ch.SearchCustomerByStatus)
 }

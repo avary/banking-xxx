@@ -9,6 +9,7 @@ import (
 // CustomerService is our PRIMARY PORT
 type CustomerService interface {
 	GetCustomerById(id int64) (*dto.CustomerResponse, lib.RestErr)
+	SearchByStatus(status int8) ([]dto.CustomerResponse, lib.RestErr)
 }
 
 type DefaultCustomerService struct {
@@ -29,4 +30,18 @@ func (s DefaultCustomerService) GetCustomerById(id int64) (*dto.CustomerResponse
 	resp := c.ToCustomerResponse()
 
 	return &resp, nil
+}
+
+// SearchByStatus returns customer by status
+func (s DefaultCustomerService) SearchByStatus(status int8) ([]dto.CustomerResponse, lib.RestErr) {
+	customers, err := s.repo.FindByStatus(status)
+	if err != nil || len(customers) == 0 {
+		return nil, err
+	}
+
+	resp := make([]dto.CustomerResponse, 0)
+	for _, c := range customers {
+		resp = append(resp, c.ToCustomerResponse())
+	}
+	return resp, err
 }

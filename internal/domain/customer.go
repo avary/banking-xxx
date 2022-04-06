@@ -22,8 +22,8 @@ type Customer struct {
 // CustomerRepository is a SECONDARY PORT on Hexagonal architecture
 type CustomerRepository interface {
 	FindById(id int64) (*Customer, lib.RestErr)
+	FindByStatus(status int8) ([]Customer, lib.RestErr)
 
-	//FindByStatus(status string) ([]Customer, lib.RestErr)
 	//FindByName(name string) (*Customer, lib.RestErr)
 	//Create(customer *Customer) (*Customer, lib.RestErr)
 	//Update(customer *Customer) (*Customer, lib.RestErr)

@@ -30,3 +30,23 @@ func (ch *CustomerHandlers) GetCustomerByID(c *gin.Context) {
 
 	c.JSON(http.StatusOK, customer)
 }
+
+// SearchCustomerByStatus is a handler function to get customer by status
+func (ch *CustomerHandlers) SearchCustomerByStatus(c *gin.Context) {
+	log.Println("Handling GET request on ... /customers/{status}")
+
+	status, err := validateCustomerStatus(c.Query("status"))
+
+	if err != nil {
+		c.JSON(err.AsStatus(), err)
+		return
+	}
+
+	customers, err := ch.Service.SearchByStatus(status)
+	if err != nil {
+		c.JSON(err.AsStatus(), err)
+		return
+	}
+
+	c.JSON(http.StatusOK, customers)
+}
