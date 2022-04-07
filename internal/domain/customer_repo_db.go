@@ -10,6 +10,7 @@ import (
 const (
 	findByIdSql     = `SELECT customer_id, name, city, zipcode, date_of_birth, status FROM customers WHERE customer_id = $1;`
 	findByStatusSql = `SELECT customer_id, name, city, zipcode, date_of_birth, status FROM customers WHERE status = $1;`
+	createSql       = `INSERT INTO customers (name, city, zipcode, date_of_birth) VALUES ($1, $2, $3, $4) RETURNING customer_id;`
 	findAllSql      = `SELECT customer_id, name, city, zipcode, date_of_birth, status FROM customers;`
 )
 
@@ -65,4 +66,15 @@ func (d *CustomerRepoDb) FindByStatus(status int8) ([]Customer, lib.RestErr) {
 	}
 
 	return customers, nil
+}
+
+// Create creates a new customer
+func (d *CustomerRepoDb) Create(c *Customer) (*Customer, lib.RestErr) {
+	row := d.db.QueryRow(context.Background(), createSql, c.Name, c.City, c.Zipcode, c.DateOfBirth)
+
+	if err := row.Scan(&c.Id); err != nil {
+		return nil, lib.NewInternalServerError("error when trying to create customer", err)
+	}
+
+	return c, nil
 }

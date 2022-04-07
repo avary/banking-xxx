@@ -10,6 +10,7 @@ import (
 type CustomerService interface {
 	GetCustomerById(id int64) (*dto.CustomerResponse, lib.RestErr)
 	SearchByStatus(status int8) ([]dto.CustomerResponse, lib.RestErr)
+	CreateCustomer(req dto.NewCustomerRequest) (*dto.CustomerResponse, lib.RestErr)
 }
 
 type DefaultCustomerService struct {
@@ -44,4 +45,16 @@ func (s DefaultCustomerService) SearchByStatus(status int8) ([]dto.CustomerRespo
 		resp = append(resp, c.ToCustomerResponse())
 	}
 	return resp, err
+}
+
+func (s DefaultCustomerService) CreateCustomer(req dto.NewCustomerRequest) (*dto.CustomerResponse, lib.RestErr) {
+	c := domain.ToNewCustomer(req)
+
+	customer, err := s.repo.Create(c)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := customer.ToCustomerResponse()
+	return &resp, nil
 }

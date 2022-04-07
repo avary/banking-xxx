@@ -1,7 +1,9 @@
 package rest
 
 import (
+	"github.com/ashtishad/banking/internal/dto"
 	"github.com/ashtishad/banking/internal/service"
+	"github.com/ashtishad/banking/pkg/lib"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -49,4 +51,26 @@ func (ch *CustomerHandlers) SearchCustomerByStatus(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, customers)
+}
+
+// CreateCustomer is a handler function to create customer
+func (ch *CustomerHandlers) CreateCustomer(c *gin.Context) {
+	log.Println("Handling POST request on ... /customers")
+
+	var req dto.NewCustomerRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		log.Printf("Error while binding request: %v", err.Error())
+		restErr := lib.NewBadRequestError("invalid json body")
+		c.JSON(restErr.AsStatus(), restErr)
+		return
+	}
+
+	result, saveErr := ch.Service.CreateCustomer(req)
+	if saveErr != nil {
+		log.Printf("Error while creating user: %v", saveErr)
+		c.JSON(saveErr.AsStatus(), saveErr)
+		return
+	}
+	c.JSON(http.StatusCreated, result)
 }

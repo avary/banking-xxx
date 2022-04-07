@@ -12,9 +12,9 @@ import (
 
 type Customer struct {
 	Id          int64     `json:"id"`
-	Name        string    `json:"name"`
-	City        string    `json:"city"`
-	Zipcode     string    `json:"zipcode"`
+	Name        string    `json:"full_name" binding:"required,min=3,max=50,alpha"`
+	City        string    `json:"city" binding:"required,min=3,max=50,alpha"`
+	Zipcode     string    `json:"zipcode" binding:"required,min=3,max=50,number"`
 	DateOfBirth time.Time `json:"date_of_birth"`
 	Status      int8      `json:"status"`
 }
@@ -23,9 +23,9 @@ type Customer struct {
 type CustomerRepository interface {
 	FindById(id int64) (*Customer, lib.RestErr)
 	FindByStatus(status int8) ([]Customer, lib.RestErr)
+	Create(customer *Customer) (*Customer, lib.RestErr)
 
 	//FindByName(name string) (*Customer, lib.RestErr)
-	//Create(customer *Customer) (*Customer, lib.RestErr)
 	//Update(customer *Customer) (*Customer, lib.RestErr)
 	//Delete(id int64) lib.RestErr
 }
@@ -55,5 +55,40 @@ func (c Customer) ToCustomerResponse() dto.CustomerResponse {
 		Zipcode:     c.Zipcode,
 		DateOfBirth: c.dateAsText(),
 		Status:      c.statusAsText(),
+	}
+}
+
+//// ValidateNewCustomerRequest validates Customer domain entity
+//func ValidateNewCustomerRequest(c dto.NewCustomerRequest) lib.RestErr {
+//	rName := regexp.MustCompile(lib.NameRegex.Pattern)
+//	rCity := regexp.MustCompile(lib.CityRegex.Pattern)
+//	rZipcode := regexp.MustCompile(lib.ZipRegex.Pattern)
+//	rDOB := regexp.MustCompile(lib.DOBRegex.Pattern)
+//
+//	// validate name
+//
+//	if !rName.MatchString(c.Name) {
+//		return lib.NewBadRequestError(lib.NameRegex.Error)
+//	}
+//	if !rCity.MatchString(c.City) {
+//		return lib.NewBadRequestError("city is invalid")
+//	}
+//	if !rZipcode.MatchString(c.Zipcode) {
+//		return lib.NewBadRequestError("zipcode is invalid")
+//	}
+//	if !rDOB.MatchString(c.DateOfBirth) {
+//		return lib.NewBadRequestError("date of birth is invalid")
+//	}
+//
+//	return nil
+//}
+
+func ToNewCustomer(cr dto.NewCustomerRequest) *Customer {
+	return &Customer{
+		Name:        cr.Name,
+		City:        cr.City,
+		Zipcode:     cr.Zipcode,
+		DateOfBirth: lib.DateAsTime(cr.DateOfBirth),
+		Status:      1,
 	}
 }
