@@ -3,6 +3,7 @@ package domain
 import (
 	"github.com/ashtishad/banking/internal/dto"
 	"github.com/ashtishad/banking/pkg/lib"
+	"regexp"
 	"time"
 )
 
@@ -12,10 +13,10 @@ import (
 
 type Customer struct {
 	Id          int64     `json:"id"`
-	Name        string    `json:"full_name" binding:"required,min=3,max=50,alpha"`
-	City        string    `json:"city" binding:"required,min=3,max=50,alpha"`
-	Zipcode     string    `json:"zipcode" binding:"required,min=3,max=50,number"`
-	DateOfBirth time.Time `json:"date_of_birth"`
+	Name        string    `json:"full_name" binding:"required"`
+	City        string    `json:"city" binding:"required"`
+	Zipcode     string    `json:"zipcode" binding:"required"`
+	DateOfBirth time.Time `json:"date_of_birth" binding:"required"`
 	Status      int8      `json:"status"`
 }
 
@@ -58,30 +59,28 @@ func (c Customer) ToCustomerResponse() dto.CustomerResponse {
 	}
 }
 
-//// ValidateNewCustomerRequest validates Customer domain entity
-//func ValidateNewCustomerRequest(c dto.NewCustomerRequest) lib.RestErr {
-//	rName := regexp.MustCompile(lib.NameRegex.Pattern)
-//	rCity := regexp.MustCompile(lib.CityRegex.Pattern)
-//	rZipcode := regexp.MustCompile(lib.ZipRegex.Pattern)
-//	rDOB := regexp.MustCompile(lib.DOBRegex.Pattern)
-//
-//	// validate name
-//
-//	if !rName.MatchString(c.Name) {
-//		return lib.NewBadRequestError(lib.NameRegex.Error)
-//	}
-//	if !rCity.MatchString(c.City) {
-//		return lib.NewBadRequestError("city is invalid")
-//	}
-//	if !rZipcode.MatchString(c.Zipcode) {
-//		return lib.NewBadRequestError("zipcode is invalid")
-//	}
-//	if !rDOB.MatchString(c.DateOfBirth) {
-//		return lib.NewBadRequestError("date of birth is invalid")
-//	}
-//
-//	return nil
-//}
+// ValidateNewCustomerRequest validates Customer domain entity
+func ValidateNewCustomerRequest(c dto.NewCustomerRequest) lib.RestErr {
+	rName := regexp.MustCompile(lib.NameRegex.Pattern)
+	rCity := regexp.MustCompile(lib.CityRegex.Pattern)
+	rZipcode := regexp.MustCompile(lib.ZipRegex.Pattern)
+	rDOB := regexp.MustCompile(lib.DOBRegex.Pattern)
+
+	if !rName.MatchString(c.Name) {
+		return lib.NewBadRequestError(lib.NameRegex.Error)
+	}
+	if !rCity.MatchString(c.City) {
+		return lib.NewBadRequestError(lib.CityRegex.Error)
+	}
+	if !rZipcode.MatchString(c.Zipcode) {
+		return lib.NewBadRequestError(lib.ZipRegex.Error)
+	}
+	if !rDOB.MatchString(c.DateOfBirth) {
+		return lib.NewBadRequestError(lib.DOBRegex.Error)
+	}
+
+	return nil
+}
 
 func ToNewCustomer(cr dto.NewCustomerRequest) *Customer {
 	return &Customer{

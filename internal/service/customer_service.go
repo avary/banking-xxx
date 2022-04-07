@@ -48,6 +48,10 @@ func (s DefaultCustomerService) SearchByStatus(status int8) ([]dto.CustomerRespo
 }
 
 func (s DefaultCustomerService) CreateCustomer(req dto.NewCustomerRequest) (*dto.CustomerResponse, lib.RestErr) {
+	if err := domain.ValidateNewCustomerRequest(req); err != nil {
+		return nil, err
+	}
+
 	c := domain.ToNewCustomer(req)
 
 	customer, err := s.repo.Create(c)
