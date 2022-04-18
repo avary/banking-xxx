@@ -18,8 +18,8 @@
 
 #### Libraries Used
 
-    1. Pgx (Postgres Driver)
-    2. Gorilla/Mux (Routing)
+    1. Pgxpool (Concurrency Safe Postgres Driver)
+    2. gin-gonic (Web Frameowrk)
     3. Validator (JSON Validatin Middleware)
 
 #### Routes
