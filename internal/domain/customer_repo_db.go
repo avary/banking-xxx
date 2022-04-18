@@ -70,7 +70,6 @@ func (d *CustomerRepoDb) FindByStatus(status int8) ([]Customer, lib.RestErr) {
 }
 
 // Create creates a new customer
-// ToDO: Why pointer to customer as parameter?
 func (d *CustomerRepoDb) Create(c Customer) (*Customer, lib.RestErr) {
 	row := d.db.QueryRow(context.Background(), createSql, c.Name, c.City, c.Zipcode, c.DateOfBirth)
 

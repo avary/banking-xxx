@@ -84,7 +84,7 @@
         - New Transaction
 
 
-# 2. Auth Microservice
+# 2. Auth Microservice(YET TO BE IMPLEMENTED)
 
 
 #### Auth Policy
