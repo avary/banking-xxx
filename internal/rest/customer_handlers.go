@@ -74,3 +74,32 @@ func (ch *CustomerHandlers) CreateCustomer(c *gin.Context) {
 	}
 	c.JSON(http.StatusCreated, result)
 }
+
+// UpdateCustomer is a handler function to update customer
+func (ch *CustomerHandlers) UpdateCustomer(c *gin.Context) {
+	log.Println("Handling PUT request on ... /customers/{id}")
+
+	id, err := getCustomerIdFromPath(c.Param("id"))
+	if err != nil {
+		log.Printf("Error while getting user id : %v", err)
+		c.JSON(err.AsStatus(), err)
+		return
+	}
+
+	var req dto.CustomerUpdateRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		log.Printf("Error while binding request: %v", err.Error())
+		restErr := lib.NewBadRequestError("invalid json body")
+		c.JSON(restErr.AsStatus(), restErr)
+		return
+	}
+
+	result, saveErr := ch.Service.UpdateCustomer(id, req)
+	if saveErr != nil {
+		log.Printf("Error while updating user: %v", saveErr)
+		c.JSON(saveErr.AsStatus(), saveErr)
+		return
+	}
+	c.JSON(http.StatusOK, result)
+}

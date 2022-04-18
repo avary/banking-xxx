@@ -9,4 +9,5 @@ func getRouteMappings(r *gin.Engine, ch rest.CustomerHandlers) {
 	r.GET("/customers/:id", ch.GetCustomerByID)
 	r.GET("/customers/search", ch.SearchCustomerByStatus)
 	r.POST("/customers", ch.CreateCustomer)
+	r.PUT("/customers/:id", ch.UpdateCustomer)
 }

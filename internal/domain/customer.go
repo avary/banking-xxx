@@ -4,6 +4,7 @@ import (
 	"github.com/ashtishad/banking/internal/dto"
 	"github.com/ashtishad/banking/pkg/lib"
 	"regexp"
+	"strconv"
 	"time"
 )
 
@@ -25,9 +26,9 @@ type CustomerRepository interface {
 	FindById(id int64) (*Customer, lib.RestErr)
 	FindByStatus(status int8) ([]Customer, lib.RestErr)
 	Create(customer *Customer) (*Customer, lib.RestErr)
+	Update(c Customer) (*Customer, lib.RestErr)
 
 	//FindByName(name string) (*Customer, lib.RestErr)
-	//Update(customer *Customer) (*Customer, lib.RestErr)
 	//Delete(id int64) lib.RestErr
 }
 
@@ -89,5 +90,38 @@ func ToNewCustomer(cr dto.NewCustomerRequest) *Customer {
 		Zipcode:     cr.Zipcode,
 		DateOfBirth: lib.DateAsTime(cr.DateOfBirth),
 		Status:      1,
+	}
+}
+
+// ValidateUpdateCustomerRequest validates Customer domain entity
+func ValidateUpdateCustomerRequest(req dto.CustomerUpdateRequest) lib.RestErr {
+	rName := regexp.MustCompile(lib.NameRegex.Pattern)
+	rCity := regexp.MustCompile(lib.CityRegex.Pattern)
+	rZipcode := regexp.MustCompile(lib.ZipRegex.Pattern)
+
+	if !rName.MatchString(req.Name) {
+		return lib.NewBadRequestError(lib.NameRegex.Error)
+	}
+	if !rCity.MatchString(req.City) {
+		return lib.NewBadRequestError(lib.CityRegex.Error)
+	}
+	if !rZipcode.MatchString(req.Zipcode) {
+		return lib.NewBadRequestError(lib.ZipRegex.Error)
+	}
+	if req.Status != "0" && req.Status != "1" {
+		return lib.NewBadRequestError("status must be 0 or 1")
+	}
+
+	return nil
+}
+
+func ToUpdateCustomer(id int64, cr dto.CustomerUpdateRequest) Customer {
+	status, _ := strconv.Atoi(cr.Status)
+	return Customer{
+		Id:      id,
+		Name:    cr.Name,
+		City:    cr.City,
+		Zipcode: cr.Zipcode,
+		Status:  int8(status),
 	}
 }

@@ -8,10 +8,11 @@ import (
 )
 
 const (
-	findByIdSql     = `SELECT customer_id, name, city, zipcode, date_of_birth, status FROM customers WHERE customer_id = $1;`
-	findByStatusSql = `SELECT customer_id, name, city, zipcode, date_of_birth, status FROM customers WHERE status = $1;`
-	createSql       = `INSERT INTO customers (name, city, zipcode, date_of_birth) VALUES ($1, $2, $3, $4) RETURNING customer_id;`
-	findAllSql      = `SELECT customer_id, name, city, zipcode, date_of_birth, status FROM customers;`
+	findByIdSql       = `SELECT customer_id, name, city, zipcode, date_of_birth, status FROM customers WHERE customer_id = $1;`
+	findByStatusSql   = `SELECT customer_id, name, city, zipcode, date_of_birth, status FROM customers WHERE status = $1;`
+	createSql         = `INSERT INTO customers (name, city, zipcode, date_of_birth) VALUES ($1, $2, $3, $4) RETURNING customer_id;`
+	findAllSql        = `SELECT customer_id, name, city, zipcode, date_of_birth, status FROM customers;`
+	updateCustomerSql = `UPDATE customers SET name=$1, city=$2, zipcode=$3 ,status=$4 WHERE customer_id=$5;`
 )
 
 type CustomerRepoDb struct {
@@ -69,6 +70,7 @@ func (d *CustomerRepoDb) FindByStatus(status int8) ([]Customer, lib.RestErr) {
 }
 
 // Create creates a new customer
+// ToDO: Why pointer to customer as parameter?
 func (d *CustomerRepoDb) Create(c *Customer) (*Customer, lib.RestErr) {
 	row := d.db.QueryRow(context.Background(), createSql, c.Name, c.City, c.Zipcode, c.DateOfBirth)
 
@@ -77,4 +79,20 @@ func (d *CustomerRepoDb) Create(c *Customer) (*Customer, lib.RestErr) {
 	}
 
 	return c, nil
+}
+
+// Update updatable fields of a customer
+// fields that are not updatable are ignored(customer_id, date_of_birth)
+func (d *CustomerRepoDb) Update(c Customer) (*Customer, lib.RestErr) {
+	// check user exists
+	if check, err := d.checkCustomerExists(c.Id); check == false {
+		return nil, err
+	}
+
+	_, err := d.db.Exec(context.Background(), updateCustomerSql, c.Name, c.City, c.Zipcode, c.Status, c.Id)
+	if err != nil {
+		return nil, lib.NewInternalServerError("Could not update user : ", err)
+	}
+	// retrieve updated user
+	return d.FindById(c.Id)
 }
