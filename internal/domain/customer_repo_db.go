@@ -71,14 +71,14 @@ func (d *CustomerRepoDb) FindByStatus(status int8) ([]Customer, lib.RestErr) {
 
 // Create creates a new customer
 // ToDO: Why pointer to customer as parameter?
-func (d *CustomerRepoDb) Create(c *Customer) (*Customer, lib.RestErr) {
+func (d *CustomerRepoDb) Create(c Customer) (*Customer, lib.RestErr) {
 	row := d.db.QueryRow(context.Background(), createSql, c.Name, c.City, c.Zipcode, c.DateOfBirth)
 
 	if err := row.Scan(&c.Id); err != nil {
 		return nil, lib.NewInternalServerError("error when trying to create customer", err)
 	}
 
-	return c, nil
+	return &c, nil
 }
 
 // Update updatable fields of a customer

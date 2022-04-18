@@ -25,7 +25,7 @@ type Customer struct {
 type CustomerRepository interface {
 	FindById(id int64) (*Customer, lib.RestErr)
 	FindByStatus(status int8) ([]Customer, lib.RestErr)
-	Create(customer *Customer) (*Customer, lib.RestErr)
+	Create(c Customer) (*Customer, lib.RestErr)
 	Update(c Customer) (*Customer, lib.RestErr)
 
 	//FindByName(name string) (*Customer, lib.RestErr)
@@ -83,8 +83,8 @@ func ValidateNewCustomerRequest(c dto.NewCustomerRequest) lib.RestErr {
 	return nil
 }
 
-func ToNewCustomer(cr dto.NewCustomerRequest) *Customer {
-	return &Customer{
+func ToNewCustomer(cr dto.NewCustomerRequest) Customer {
+	return Customer{
 		Name:        cr.Name,
 		City:        cr.City,
 		Zipcode:     cr.Zipcode,
