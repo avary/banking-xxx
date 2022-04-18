@@ -24,10 +24,14 @@
 
 #### Routes
 
-    1. GetAllCustomers:     GET     /customers?status=
-    2. GetCustomer:         GET     /customers/:id
-    3  NewAccount:          POST    /customers/:id/accounts
-    4. NewTransaction:      POST    /customers/:id/account/:account_id
+    1. GetCustomerById:         GET     /customers/:id
+    2. GetCustomersByStatus:    GET     /customers?status=
+    3. CreateCustomer           POST    /customers
+    4. UpdateCustomer           PUT     /customers/:id
+    
+    To Be Implented
+    5.  NewAccount:             POST    /customers/:id/accounts
+    6.. NewTransaction:         POST    /customers/:id/account/:account_id
 
 #### Data Exchange Format
 
